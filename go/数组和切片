@@ -1,6 +1,4 @@
-# 数组和切片
-
-## 数组
+### 数组
 
 ```go
 type Currency int
@@ -16,13 +14,13 @@ fmt.Println(RMB, symbol[RMB]) // "3 ￥"
 
 在这种形式的数组字面值形式中，初始化索引的顺序是无关紧要的，而且没用到的索引可以省略，未指定初始值的元素将用零值初始化。例如，
 
-```
+```go
 r := [...]int{99: -1}
 ```
 
 如果一个数组的元素类型是可以相互比较的，那么数组类型也是可以相互比较的，这时候我们可以直接通过 `==` 比较运算符来比较两个数组，只有当两个数组的所有元素都是相等的时候数组才是相等的。不相等比较运算符`!=`遵循同样的规则。
 
-```
+```go
 a := [2]int{1, 2}
 
 b := [...]int{1, 2}
@@ -42,7 +40,7 @@ fmt.Println(a == d) // compile error: cannot compare [2]int == [3]int
 
 在这个方面，*Go*语言对待数组的方式和其它很多编程语言不同，其它编程语言可能会隐式地将数组作为引用或指针对象传入被调用的函数。当然，我们可以显式地传入一个数组指针，那样的话函数通过指针对数组的任何修改都可以直接反馈到调用者。下面的函数用于给*[32]byte*类型的数组清零：
 
-```
+```go
 func zero(ptr *[32]byte) {
 	for i := range ptr {
 			ptr[i] = 0
@@ -52,7 +50,7 @@ func zero(ptr *[32]byte) {
 
 优化：
 
-```
+```go
 func zero(ptr *[32]byte) {
 	*ptr = [32]byte{}
 }
@@ -70,9 +68,11 @@ func main() {
 
 > *byte*和*rune*的零值都为0，因为他们底层为int8和*int32*
 
-## 切片
 
-```
+
+### 切片
+
+```go
 months := [...]string{1: "January", /* ... */, 12: "December"}
 Q2 := months[4:7]
 summer := months[6:9]
@@ -82,13 +82,11 @@ fmt.Println(summer) // ["June" "July" "August"]
 
 切片append的时候如果cap不够则会分配一个新的底层数组。
 
-![image-20201123120510146](/Users/didi/Library/Application Support/typora-user-images/image-20201123120510146.png)
-
-> 从上面的图可以看到切片的容量取决于底层数组的容量，从取切片的初始值开始到底层数组的尾部，这一部分的长度为切片的容量
+> 切片的容量取决于底层数组的容量，从取**切片的初始值开始到底层数组的尾部**，这一部分的长度为切片的容量
 
 ### 地址
 
-```
+```go
 func main() {
 	months := []string{1: "January"}
 	fmt.Printf("%p,\n",&months)				//0xc0000ae040,
@@ -97,9 +95,11 @@ func main() {
 }
 ```
 
+
+
 > 扩展：结构体的地址
 >
-> ```
+> ```go
 > type stu struct{
 > 	name string
 > }
@@ -113,7 +113,7 @@ func main() {
 >
 > 那么这里第一个打印函数打印的是什么地址呢？如果指向的是切片的结构体`SliceHeader`，但是
 >
-> ```
+> ```go
 > type SliceHeader struct {
 > 	Data uintptr
 > 	Len  int
@@ -127,7 +127,7 @@ func main() {
 >
 > 我们需要知道的是指针变量也是需要一个地址来存储的。
 >
-> ```
+> ```go
 > //months 是一个指针变量，存一个地址，指向这个切片。
 > 
 > //这个指针变量同样需要一个内存地址来存储。
@@ -145,7 +145,7 @@ func main() {
 >
 > 上面三个打印函数等价于
 >
-> ```
+> ```go
 > 	header := (*reflect.SliceHeader)(unsafe.Pointer(&months))
 > 	fmt.Printf("%p, \n",header)
 > 	fmt.Printf("0x%x,\n", header.Data)
@@ -154,9 +154,11 @@ func main() {
 >
 > 另外由于第一个成员变量为指针，所以结构体的地址为存储第一个成员变量（指针）的地址，而不是成员变量这个指针。
 >
-> ```
+> ```go
 > 	fmt.Printf("%x, \n",*header)
 > ```
+
+
 
 ### 引用类型
 
@@ -177,5 +179,3 @@ func main() {
 > There's a lot of history on that topic. Early on, maps and channels were syntactically pointers and it was impossible to declare or use a non-pointer instance. Also, we struggled with how arrays should work. Eventually we decided that the strict separation of pointers and values made the language harder to use. **Changing these types to act as references to the associated, shared data structures resolved these issues**. This change added some regrettable complexity to the language but had a large effect on usability: Go became a more productive, comfortable language when it was introduced.
 
 大概意思是说：最开始用的是指针语法，由于种种原因改成了引用，但是这个引用与C++的引用是不同的，它是共享关联数据的结构。也就是我们之前说的共享底层数据，切片的底层为其实为数组。
-
-更多关于引用传递和值传递参考 [Golang 值传递和引用传递](http:)
