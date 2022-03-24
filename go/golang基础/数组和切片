@@ -1,4 +1,6 @@
-### 数组
+## 数组
+
+### 数组基本概念
 
 ```go
 type Currency int
@@ -70,7 +72,11 @@ func main() {
 
 
 
-### 切片
+
+
+## 切片
+
+### 切片基本概念
 
 ```go
 months := [...]string{1: "January", /* ... */, 12: "December"}
